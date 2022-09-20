@@ -12,43 +12,39 @@ using namespace std;
 HANDLE hSerial;
 
 
-void ShowCOMPorts()
+vector<string> ShowCOMPorts()
 {
-    //vector<LPCTSTR> result;
+    vector<string> COM_list;
     int d = 0;
     for (int i = 1; i < 20; i++) {
-        HANDLE Port1;
+        HANDLE Test_Port;
 
-
-
-        string COM_str_id_id = "COM";
+        string COM_string_ID = "COM";
         if (i < 10) {
             auto i_c = i + '0';
-            COM_str_id_id.push_back(i_c);
+            COM_string_ID.push_back(i_c);
         }
         else {
             auto i_c = (i%10) + '0';
-            COM_str_id_id.push_back('1');
-            COM_str_id_id.push_back(i_c);
+            COM_string_ID.push_back('1');
+            COM_string_ID.push_back(i_c);
         }
-
-        const char* COM_str_id = COM_str_id_id.data();
-
-        const auto size = strlen(COM_str_id) + 1;
+        //--------------------------------------------> волшебные преобразования
+        const char* COM_char_ID = COM_string_ID.data();
+        const auto size = strlen(COM_char_ID) + 1;
         wchar_t COM_TC_id[size];
-        mbstowcs(COM_TC_id, COM_str_id, size);
+        mbstowcs(COM_TC_id, COM_char_ID, size);
         auto COM = (LPCTSTR) COM_TC_id;
-        cout << COM_str_id << endl;
+        //-------------------------------------------->
 
-        Port1 = CreateFile(COM, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
-        if (Port1 != INVALID_HANDLE_VALUE) {
-            //result[d] = COM;
-            cout << COM_str_id << " available" << endl;
+        Test_Port = CreateFile(COM, GENERIC_READ | GENERIC_WRITE, 0, 0, OPEN_EXISTING, 0, 0);
+        if (Test_Port != INVALID_HANDLE_VALUE) {
+            COM_list.push_back(COM_string_ID);
             d++;
-            CloseHandle(Port1);
+            CloseHandle(Test_Port);
         }
     }
-    //return result;
+    return COM_list;
 }
 
 
@@ -64,9 +60,15 @@ void ReadCOM()
       }
 }
 
-void StartCOM(LPCTSTR sPortName, int Baud)
+void StartCOM(string COM_str_id, int Baud)
 {
-    hSerial = ::CreateFile(sPortName,GENERIC_READ | GENERIC_WRITE,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
+    const char* COM_chr_id = COM_str_id.data();
+    const auto size = strlen(COM_chr_id) + 1;
+    wchar_t COM_TC_id[size];
+    mbstowcs(COM_TC_id, COM_chr_id, size);
+    auto COM = (LPCTSTR) COM_TC_id;
+
+    hSerial = ::CreateFile(COM,GENERIC_READ | GENERIC_WRITE,0,0,OPEN_EXISTING,FILE_ATTRIBUTE_NORMAL,0);
 
     DCB dcbSerialParams = {0};
     dcbSerialParams.DCBlength=sizeof(dcbSerialParams);
@@ -105,27 +107,21 @@ int main(int argc, char *argv[])
     if (!view.errors().isEmpty())
         return -1;
 
-    char data[] = "Hello from C++";
-
+    //-------------------------------------------------------------------> тест - отправки строки в порт
+    vector<string> available_Ports = ShowCOMPorts();
+    for (unsigned long long i = 0; i < available_Ports.size(); i++) {
+        cout << available_Ports[i] << " available"<< endl;
+    }
 
     int Baud = 9600;
-    auto COM_str_id = "COM9";
-
-    const auto size = strlen(COM_str_id) + 1;
-    wchar_t COM_TC_id[size];
-    mbstowcs(COM_TC_id, COM_str_id, size);
-    auto COM = (LPCTSTR) COM_TC_id;
-
-    ShowCOMPorts();
+    char data[] = "Hello from C++";
 
     cout << "TEST  ";
-    StartCOM(COM, Baud);
-
+    StartCOM(available_Ports[1], Baud);
     WriteCOM(data);
-
+    //------------------------------------------------------------------->
 
     view.show();
-
     app.exec();
     return 0;
 }
