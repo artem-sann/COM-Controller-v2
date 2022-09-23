@@ -12,6 +12,14 @@ using namespace std;
 HANDLE hSerial;
 
 
+template<typename... T>
+void print(const T&... args)
+{
+    ((std::cout << args << " "), ...);
+    std::cout << "\n";
+}
+
+
 vector<string> ShowCOMPorts()
 {
     vector<string> COM_list;
