@@ -3,7 +3,7 @@
 #include <QQuickView>
 #include <QtQuickControls2>
 #include "COM.h"
-#include <thread>
+
 
 int main(int argc, char *argv[])
 {
@@ -18,9 +18,7 @@ int main(int argc, char *argv[])
 
     //-------------------------------------------------------------------> тест - отправки строки в порт
     vector<string> available_Ports = ShowCOMPorts();
-    for (unsigned long long i = 0; i < available_Ports.size(); i++) {
-        cout << available_Ports[i] << " available"<< endl;
-    }
+    printPorts(available_Ports);
 
     int Baud = 9600;
     char data[] = "Hello from C++";

@@ -4,10 +4,17 @@
 #include <iostream>
 #include <stdlib.h>
 #include <vector>
+#include <thread>
 
 using namespace std;
 
 static HANDLE hSerial;
+
+static auto printPorts = [](const vector<string>& vec)
+{
+    for (unsigned long long i = 0; i < vec.size(); i++)
+        cout << vec[i] << " available"<< endl;
+};
 
 template<typename... T>
 void print(const T&... args);
