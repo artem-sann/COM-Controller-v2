@@ -70,7 +70,7 @@ void StartCOM(string COM_str_id, int Baud)
     dcbSerialParams.DCBlength=sizeof(dcbSerialParams);
     if (!GetCommState(hSerial, &dcbSerialParams))
     {
-        cout << "getting state error\n";
+        print("getting state error\n");
     }
     dcbSerialParams.BaudRate=Baud;
     dcbSerialParams.ByteSize=8;
@@ -78,7 +78,7 @@ void StartCOM(string COM_str_id, int Baud)
     dcbSerialParams.Parity=NOPARITY;
     if(!SetCommState(hSerial, &dcbSerialParams))
     {
-        cout << "error setting serial port state\n";
+        print("error setting serial port state\n");
     }
 }
 
@@ -87,7 +87,7 @@ bool WriteCOM(char* data)
     DWORD dwSize = strlen(data);   // размер входной строки
     DWORD dwBytesWritten;    // кол-во переданных байт
     BOOL iRet = WriteFile (hSerial, data, dwSize, &dwBytesWritten, NULL);
-    cout << dwSize << " Bytes in string. " << dwBytesWritten << " Bytes sended. " << endl; //debug info
+    print(dwSize, " Bytes in string. ", dwBytesWritten, " Bytes sended. "); //debug info
     return iRet;
 }
 
