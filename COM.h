@@ -12,8 +12,8 @@ static HANDLE hSerial;
 
 static auto printPorts = [](const vector<string>& vec)
 {
-    for (unsigned long long i = 0; i < vec.size(); i++)
-        cout << vec[i] << " available"<< endl;
+    for (const auto& elem : vec)
+        cout << elem << " available"<< endl;
 };
 
 template<typename... T>
