@@ -125,7 +125,7 @@ int main(int argc, char *argv[])
     char data[] = "Hello from C++";
 
     cout << "TEST  ";
-    StartCOM(available_Ports[1], Baud);
+    StartCOM(available_Ports[0], Baud);
     WriteCOM(data);
     //------------------------------------------------------------------->
 
